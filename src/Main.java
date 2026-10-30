@@ -266,6 +266,21 @@ static int leerEntero(String mensaje, int minimo, int maximo) {
 
         imprimir("");
 }
+    imprimir("Celda liberada: " + (posicion + 1));
+    imprimir("Tipo de vehiculo: " + tipo);
+    imprimir("Ingreso: " + ingreso.format(FORMATO_FECHA_HORA));
+    imprimir("Salida:  " + salida.format(FORMATO_FECHA_HORA));
+    if (diasACobrar > 0) {
+        imprimir(diasACobrar + " dia(s) x $" + tarifaDia + " = $" + subtotalDias);
+    }
+    if (horasACobrar > 0) {
+        imprimir(horasACobrar + " hora(s) x $" + tarifaHora + " = $" + subtotalHoras);
+    }
+    imprimir("TOTAL A PAGAR: $" + total);
+    imprimir("=============================");
+
+    return total;
+}
 
 
 
