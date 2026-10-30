@@ -125,6 +125,36 @@ private static void inicializarDatos() {
 
 private static void mostrarMenu() {
     imprimir("");
+    imprimir("1. Registrar entrada");
+    imprimir("2. Registrar salida");
+    imprimir("3. Reporte de ocupacion");
+    imprimir("4. Reporte financiero");
+    imprimir("5. Salir");
+}
 
+private static long obtenerTarifaHora(String tipo) {
+    if (tipo.equals(TIPO_CARRO)) {
+        return TARIFA_HORA_CARRO;
+    }
+    return TARIFA_HORA_MOTO;
+}
+
+private static long obtenerTarifaDia(String tipo) {
+    if (tipo.equals(TIPO_CARRO)) {
+        return TARIFA_DIA_CARRO;
+    }
+    return TARIFA_DIA_MOTO;
+}
+
+
+
+private   static int celdaDisponible() {
+    for (int posicion = 0; posicion < CAPACIDAD_TOTAL; posicion++) {
+        if (tipoVehiculo[posicion] == null) {
+            return posicion;
+        }
+    }
+    return -1;
+}
 
 
