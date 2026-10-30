@@ -23,6 +23,7 @@ public class Main {
     private static void imprimir(String mensaje) {
         System.out.println(mensaje);
     }
+
     private static LocalDateTime leerFechaHora(String mensaje) {
         while (true) {
             System.out.print(mensaje);
@@ -35,13 +36,13 @@ public class Main {
                     continue;
                 }
                 return fecha;
-            }
-            else {
+            } else {
                 imprimir("Fecha u hora inválidas. Use yyyy-MM-dd HH:mm y el horario 08:00-22:00.");
             }
 
         }
     }
+
     private static boolean formatoFechaHoraValido(String texto) {
         if (texto.length() != 16
                 || texto.charAt(4) != '-'
@@ -51,7 +52,7 @@ public class Main {
             return false;
         }
 
-        int anio = leerDigitos(texto,0, 4);
+        int anio = leerDigitos(texto, 0, 4);
         int mes = leerDigitos(texto, 5, 2);
         int dia = leerDigitos(texto, 8, 2);
         int hora = leerDigitos(texto, 11, 2);
@@ -62,6 +63,7 @@ public class Main {
                 && (hora != HORA_CIERRE || minuto <= 0)
                 && minuto >= 0 && minuto <= 59;
     }
+
     private static int leerDigitos(String texto, int inicio, int cantidad) {
         int valor = 0;
         for (int i = inicio; i < inicio + cantidad; i++) {
@@ -73,10 +75,56 @@ public class Main {
         }
         return valor;
     }
+
     private static String[] tipoVehiculo = new String[CAPACIDAD_TOTAL];
     private static LocalDateTime[] fechaIngreso = new LocalDateTime[CAPACIDAD_TOTAL];
     static int celdasOcupadas;
     static int celdasLibres;
     static long recaudoCarros;
     static long recaudoMotos;
+
 }
+private static void main(String[] args) {
+    inicializarDatos();
+    int opcion;
+    do {
+        mostrarMenu();
+        opcion = leerEntero("Seleccione una opcion: ", 1, 5);
+        switch (opcion) {
+            case 1:
+                registrarEntrada();
+                break;
+            case 2:
+                registrarSalida();
+                break;
+            case 3:
+                reporteOcupacion();
+                break;
+            case 4:
+                reporteFinanciero();
+                break;
+            case 5:
+                imprimir("Gracias por usar el sistema. Hasta pronto.");
+                break;
+        }
+    } while (opcion != 5);
+
+    scanner.close();
+}
+
+private static void inicializarDatos() {
+    for (int posicion = 0; posicion < CAPACIDAD_TOTAL; posicion++) {
+        tipoVehiculo[posicion] = null;
+        fechaIngreso[posicion] = null;
+    }
+    celdasOcupadas = 0;
+    celdasLibres = CAPACIDAD_TOTAL;
+    recaudoCarros = 0;
+    recaudoMotos = 0;
+}
+
+private static void mostrarMenu() {
+    imprimir("");
+
+
+
