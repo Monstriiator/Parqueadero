@@ -197,7 +197,76 @@ static int leerEntero(String mensaje, int minimo, int maximo) {
         }
         return valor;
     }
+    private static void registrarSalida() {
+        if (celdasOcupadas == 0) {
+            imprimir("No hay vehiculos en el parqueadero.");
+            return;
+        }
+
+        int celda = leerEntero("Numero de celda (1-" + CAPACIDAD_TOTAL + "): ", 1, CAPACIDAD_TOTAL);
+        int posicion = celda - 1;
+
+        if (tipoVehiculo[posicion] == null) {
+            imprimir("La celda " + celda + " esta libre. No hay vehiculo para liquidar.");
+            return;
+        }
+
+        LocalDateTime salida;
+        while (true) {
+            salida = leerFechaHora("Fecha y hora de salida (yyyy-MM-dd HH:mm): ");
+            if (!salida.isBefore(fechaIngreso[posicion])) {
+                break;
+            }
+            imprimir("Error: la salida no puede ser anterior al ingreso ("
+                    + fechaIngreso[posicion].format(FORMATO_FECHA_HORA) + ").");
+        }
+
+        String tipo = tipoVehiculo[posicion];
+        long total = liquidar(posicion, salida);
+
+        if (tipo.equals(TIPO_CARRO)) {
+            recaudoCarros += total;
+        } else {
+            recaudoMotos += total;
+        }
+
+        tipoVehiculo[posicion] = null;
+        fechaIngreso[posicion] = null;
+        celdasOcupadas--;
+        celdasLibres++;
+    }
+
+    static long contarDiasCompletos(LocalDateTime ingreso, LocalDateTime salida) {
+        return ChronoUnit.DAYS.between(ingreso, salida);
+    }
+
+    static long calcularHorasRestantes(LocalDateTime cursor, LocalDateTime salida) {
+        long minutosRestantes = Duration.between (cursor, salida).toMinutes();
+        return (minutosRestantes + 59) / 60;
+    }
+
+    static long liquidar(int posicion, LocalDateTime salida) {
+        String tipo = tipoVehiculo[posicion];
+        LocalDateTime ingreso = fechaIngreso[posicion];
+
+        long diasACobrar = contarDiasCompletos(ingreso, salida);
+        LocalDateTime cursor = ingreso.plusDays(diasACobrar);
+        long horasACobrar = calcularHorasRestantes(cursor, salida);
+
+        if (horasACobrar >= MINIMO_HORAS_DIAS) {
+            diasACobrar++;
+            horasACobrar = 0;
+        }
+
+        long tarifaDia = obtenerTarifaDia(tipo);
+        long tarifaHora = obtenerTarifaHora(tipo);
+        long subtotalDias = diasACobrar * tarifaDia;
+        long subtotalHoras = horasACobrar * tarifaHora;
+        long total = subtotalDias + subtotalHoras;
+
+        imprimir("");
 }
+
 
 
 
