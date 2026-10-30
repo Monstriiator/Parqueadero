@@ -23,7 +23,6 @@ public class Main {
     private static void imprimir(String mensaje) {
         System.out.println(mensaje);
     }
-
     private static LocalDateTime leerFechaHora(String mensaje) {
         while (true) {
             System.out.print(mensaje);
@@ -36,13 +35,13 @@ public class Main {
                     continue;
                 }
                 return fecha;
-            } else {
+            }
+            else {
                 imprimir("Fecha u hora inválidas. Use yyyy-MM-dd HH:mm y el horario 08:00-22:00.");
             }
 
         }
     }
-
     private static boolean formatoFechaHoraValido(String texto) {
         if (texto.length() != 16
                 || texto.charAt(4) != '-'
@@ -52,7 +51,7 @@ public class Main {
             return false;
         }
 
-        int anio = leerDigitos(texto, 0, 4);
+        int anio = leerDigitos(texto,0, 4);
         int mes = leerDigitos(texto, 5, 2);
         int dia = leerDigitos(texto, 8, 2);
         int hora = leerDigitos(texto, 11, 2);
@@ -63,7 +62,6 @@ public class Main {
                 && (hora != HORA_CIERRE || minuto <= 0)
                 && minuto >= 0 && minuto <= 59;
     }
-
     private static int leerDigitos(String texto, int inicio, int cantidad) {
         int valor = 0;
         for (int i = inicio; i < inicio + cantidad; i++) {
@@ -75,7 +73,6 @@ public class Main {
         }
         return valor;
     }
-
     private static String[] tipoVehiculo = new String[CAPACIDAD_TOTAL];
     private static LocalDateTime[] fechaIngreso = new LocalDateTime[CAPACIDAD_TOTAL];
     static int celdasOcupadas;
@@ -83,120 +80,125 @@ public class Main {
     static long recaudoCarros;
     static long recaudoMotos;
 
-}
-private static void main(String[] args) {
-    inicializarDatos();
-    int opcion;
-    do {
-        mostrarMenu();
-        opcion = leerEntero("Seleccione una opcion: ", 1, 5);
-        switch (opcion) {
-            case 1:
-                registrarEntrada();
-                break;
-            case 2:
-                registrarSalida();
-                break;
-            case 3:
-                reporteOcupacion();
-                break;
-            case 4:
-                reporteFinanciero();
-                break;
-            case 5:
-                imprimir("Gracias por usar el sistema. Hasta pronto.");
-                break;
+    private static void main(String[] args) {
+        inicializarDatos();
+        int opcion;
+        do {
+            mostrarMenu();
+            opcion = leerEntero("Seleccione una opcion: ", 1, 5);
+            switch (opcion) {
+                case 1:
+                    registrarEntrada();
+                    break;
+                case 2:
+                    registrarSalida();
+                    break;
+                case 3:
+                    reporteOcupacion();
+                    break;
+                case 4:
+                    reporteFinanciero();
+                    break;
+                case 5:
+                    imprimir("Gracias por usar el sistema. Hasta pronto.");
+                    break;
+            }
+        } while (opcion != 5);
+
+        scanner.close();
+    }
+
+    private static void inicializarDatos() {
+        for (int posicion = 0; posicion < CAPACIDAD_TOTAL; posicion++) {
+            tipoVehiculo[posicion] = null;
+            fechaIngreso[posicion] = null;
         }
-    } while (opcion != 5);
-
-    scanner.close();
-}
-
-private static void inicializarDatos() {
-    for (int posicion = 0; posicion < CAPACIDAD_TOTAL; posicion++) {
-        tipoVehiculo[posicion] = null;
-        fechaIngreso[posicion] = null;
+        celdasOcupadas = 0;
+        celdasLibres = CAPACIDAD_TOTAL;
+        recaudoCarros = 0;
+        recaudoMotos = 0;
     }
-    celdasOcupadas = 0;
-    celdasLibres = CAPACIDAD_TOTAL;
-    recaudoCarros = 0;
-    recaudoMotos = 0;
-}
 
-private static void mostrarMenu() {
-    imprimir("");
-    imprimir("1. Registrar entrada");
-    imprimir("2. Registrar salida");
-    imprimir("3. Reporte de ocupacion");
-    imprimir("4. Reporte financiero");
-    imprimir("5. Salir");
-}
-
-private static long obtenerTarifaHora(String tipo) {
-    if (tipo.equals(TIPO_CARRO)) {
-        return TARIFA_HORA_CARRO;
+    private static void mostrarMenu() {
+        imprimir("");
+        imprimir("===== PARQUEADERO =====");
+        imprimir("1. Registrar entrada");
+        imprimir("2. Registrar salida");
+        imprimir("3. Reporte de ocupacion");
+        imprimir("4. Reporte financiero");
+        imprimir("5. Salir");
     }
-    return TARIFA_HORA_MOTO;
-}
 
-private static long obtenerTarifaDia(String tipo) {
-    if (tipo.equals(TIPO_CARRO)) {
-        return TARIFA_DIA_CARRO;
+    private static long obtenerTarifaHora(String tipo) {
+        if (tipo.equals(TIPO_CARRO)) {
+            return TARIFA_HORA_CARRO;
+        }
+        return TARIFA_HORA_MOTO;
     }
-    return TARIFA_DIA_MOTO;
-}
+
+    private static long obtenerTarifaDia(String tipo) {
+        if (tipo.equals(TIPO_CARRO)) {
+            return TARIFA_DIA_CARRO;
+        }
+        return TARIFA_DIA_MOTO;
+    }
 
 
 
-private   static int celdaDisponible() {
-    for (int posicion = 0; posicion < CAPACIDAD_TOTAL; posicion++) {
-        if (tipoVehiculo[posicion] == null) {
-            return posicion;
+    private   static int celdaDisponible() {
+        for (int posicion = 0; posicion < CAPACIDAD_TOTAL; posicion++) {
+            if (tipoVehiculo[posicion] == null) {
+                return posicion;
+            }
+        }
+        return -1;
+    }
+
+    private static void registrarEntrada() {
+        int posicion = celdaDisponible();
+        if (posicion == -1) {
+            imprimir("El parqueadero esta lleno. No se puede registrar el ingreso.");
+            return;
+        }
+
+        imprimir("1. Carro");
+        imprimir("2. Moto");
+        int opcionTipo = leerEntero("Tipo de vehiculo: ", 1, 2);
+        String tipo = TIPO_MOTO;
+        if (opcionTipo == 1) {
+            tipo = TIPO_CARRO;
+        }
+
+        LocalDateTime ingreso = leerFechaHora("Fecha y hora de ingreso (yyyy-MM-dd HH:mm): ");
+
+        tipoVehiculo[posicion] = tipo;
+        fechaIngreso[posicion] = ingreso;
+        celdasOcupadas++;
+        celdasLibres--;
+
+        imprimir("Ingreso registrado. Celda asignada: " + (posicion + 1));
+    }
+
+    // ===================== VALIDACION DE DATOS =====================
+    // Lee un entero dentro de un rango; repite hasta que sea valido
+    static int leerEntero(String mensaje, int minimo, int maximo) {
+        while (true) {
+            System.out.print(mensaje);
+            if (!scanner.hasNextInt()) {
+                imprimir("Error: ingrese un numero entero.");
+                scanner.nextLine(); // descarta la linea incorrecta
+                continue;
+            }
+            int valor = scanner.nextInt();
+            scanner.nextLine(); // consume el salto de linea pendiente
+            if (valor < minimo || valor > maximo) {
+                imprimir("Error: el valor debe estar entre " + minimo + " y " + maximo + ".");
+                continue;
+            }
+            return valor;
         }
     }
-    return -1;
-}
-private static void registrarEntrada() {
-    int posicion = celdaDisponible();
-    if (posicion == -1) {
-        imprimir("El parqueadero esta lleno. No se puede registrar el ingreso.");
-        return;
-    }
 
-    imprimir("1. Carro");
-    imprimir("2. Moto");
-    int opcionTipo = leerEntero("Tipo de vehiculo: ", 1, 2);
-    String tipo = TIPO_MOTO;
-    if (opcionTipo == 1) {
-        tipo = TIPO_CARRO;
-    }
-
-    LocalDateTime ingreso = leerFechaHora("Fecha y hora de ingreso (yyyy-MM-dd HH:mm): ");
-
-    tipoVehiculo[posicion] = tipo;
-    fechaIngreso[posicion] = ingreso;
-    celdasOcupadas++;
-    celdasLibres--;
-
-    imprimir("Ingreso registrado. Celda asignada: " + (posicion + 1));
-}
-
-static int leerEntero(String mensaje, int minimo, int maximo) {
-    while (true) {
-        System.out.print(mensaje);
-        if (!scanner.hasNextInt()) {
-            imprimir("Error: ingrese un numero entero.");
-            scanner.nextLine(); // descarta la linea incorrecta
-            continue;
-        }
-        int valor = scanner.nextInt();
-        scanner.nextLine(); // consume el salto de linea pendiente
-        if (valor < minimo || valor > maximo) {
-            imprimir("Error: el valor debe estar entre " + minimo + " y " + maximo + ".");
-            continue;
-        }
-        return valor;
-    }
     private static void registrarSalida() {
         if (celdasOcupadas == 0) {
             imprimir("No hay vehiculos en el parqueadero.");
@@ -265,35 +267,35 @@ static int leerEntero(String mensaje, int minimo, int maximo) {
         long total = subtotalDias + subtotalHoras;
 
         imprimir("");
-}
-    imprimir("Celda liberada: " + (posicion + 1));
-    imprimir("Tipo de vehiculo: " + tipo);
-    imprimir("Ingreso: " + ingreso.format(FORMATO_FECHA_HORA));
-    imprimir("Salida:  " + salida.format(FORMATO_FECHA_HORA));
-    if (diasACobrar > 0) {
-        imprimir(diasACobrar + " dia(s) x $" + tarifaDia + " = $" + subtotalDias);
+        imprimir("========== FACTURA ==========");
+        imprimir("Celda liberada: " + (posicion + 1));
+        imprimir("Tipo de vehiculo: " + tipo);
+        imprimir("Ingreso: " + ingreso.format(FORMATO_FECHA_HORA));
+        imprimir("Salida:  " + salida.format(FORMATO_FECHA_HORA));
+        if (diasACobrar > 0) {
+            imprimir(diasACobrar + " dia(s) x $" + tarifaDia + " = $" + subtotalDias);
+        }
+        if (horasACobrar > 0) {
+            imprimir(horasACobrar + " hora(s) x $" + tarifaHora + " = $" + subtotalHoras);
+        }
+        imprimir("TOTAL A PAGAR: $" + total);
+        imprimir("=============================");
+
+        return total;
     }
-    if (horasACobrar > 0) {
-        imprimir(horasACobrar + " hora(s) x $" + tarifaHora + " = $" + subtotalHoras);
+
+    static void reporteOcupacion() {
+        imprimir("");
+        imprimir("===== REPORTE DE OCUPACION =====");
+        imprimir("Celdas ocupadas: " + celdasOcupadas);
+        imprimir("Celdas libres: " + celdasLibres);
     }
-    imprimir("TOTAL A PAGAR: $" + total);
-    imprimir("=============================");
 
-    return total;
+    static void reporteFinanciero() {
+        imprimir("");
+        imprimir("===== REPORTE FINANCIERO =====");
+        imprimir("Recaudo carros: $" + recaudoCarros);
+        imprimir("Recaudo motos: $" + recaudoMotos);
+        imprimir("Total general: $" + (recaudoCarros + recaudoMotos));
+    }
 }
-static void reporteOcupacion() {
-    imprimir("");
-    imprimir("===== REPORTE DE OCUPACION =====");
-    imprimir("Celdas ocupadas: " + celdasOcupadas);
-    imprimir("Celdas libres: " + celdasLibres);
-}
-
-static void reporteFinanciero() {
-    imprimir("");
-    imprimir("===== REPORTE FINANCIERO =====");
-    imprimir("Recaudo carros: $" + recaudoCarros);
-    imprimir("Recaudo motos: $" + recaudoMotos);
-    imprimir("Total general: $" + (recaudoCarros + recaudoMotos));
-
-
-
