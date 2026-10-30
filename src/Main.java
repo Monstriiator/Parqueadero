@@ -179,8 +179,7 @@ public class Main {
         imprimir("Ingreso registrado. Celda asignada: " + (posicion + 1));
     }
 
-    // ===================== VALIDACION DE DATOS =====================
-    // Lee un entero dentro de un rango; repite hasta que sea valido
+
     static int leerEntero(String mensaje, int minimo, int maximo) {
         while (true) {
             System.out.print(mensaje);
