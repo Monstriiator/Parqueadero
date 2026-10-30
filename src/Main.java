@@ -281,7 +281,19 @@ static int leerEntero(String mensaje, int minimo, int maximo) {
 
     return total;
 }
+static void reporteOcupacion() {
+    imprimir("");
+    imprimir("===== REPORTE DE OCUPACION =====");
+    imprimir("Celdas ocupadas: " + celdasOcupadas);
+    imprimir("Celdas libres: " + celdasLibres);
+}
 
+static void reporteFinanciero() {
+    imprimir("");
+    imprimir("===== REPORTE FINANCIERO =====");
+    imprimir("Recaudo carros: $" + recaudoCarros);
+    imprimir("Recaudo motos: $" + recaudoMotos);
+    imprimir("Total general: $" + (recaudoCarros + recaudoMotos));
 
 
 
