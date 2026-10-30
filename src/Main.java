@@ -156,5 +156,48 @@ private   static int celdaDisponible() {
     }
     return -1;
 }
+private static void registrarEntrada() {
+    int posicion = celdaDisponible();
+    if (posicion == -1) {
+        imprimir("El parqueadero esta lleno. No se puede registrar el ingreso.");
+        return;
+    }
+
+    imprimir("1. Carro");
+    imprimir("2. Moto");
+    int opcionTipo = leerEntero("Tipo de vehiculo: ", 1, 2);
+    String tipo = TIPO_MOTO;
+    if (opcionTipo == 1) {
+        tipo = TIPO_CARRO;
+    }
+
+    LocalDateTime ingreso = leerFechaHora("Fecha y hora de ingreso (yyyy-MM-dd HH:mm): ");
+
+    tipoVehiculo[posicion] = tipo;
+    fechaIngreso[posicion] = ingreso;
+    celdasOcupadas++;
+    celdasLibres--;
+
+    imprimir("Ingreso registrado. Celda asignada: " + (posicion + 1));
+}
+
+static int leerEntero(String mensaje, int minimo, int maximo) {
+    while (true) {
+        System.out.print(mensaje);
+        if (!scanner.hasNextInt()) {
+            imprimir("Error: ingrese un numero entero.");
+            scanner.nextLine(); // descarta la linea incorrecta
+            continue;
+        }
+        int valor = scanner.nextInt();
+        scanner.nextLine(); // consume el salto de linea pendiente
+        if (valor < minimo || valor > maximo) {
+            imprimir("Error: el valor debe estar entre " + minimo + " y " + maximo + ".");
+            continue;
+        }
+        return valor;
+    }
+}
+
 
 
